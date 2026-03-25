@@ -1,0 +1,22 @@
+# Flutter
+.dart_tool/
+.packages
+build/
+*.iml
+.idea/
+.vscode/
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+lib/core/config/secrets.dart
+
+# Firebase (generate locally)
+lib/firebase_options.dart
+
+# OS
+.DS_Store
+Thumbs.db
+./.vs
+.vs
