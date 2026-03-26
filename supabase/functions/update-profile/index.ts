@@ -6,7 +6,7 @@ Deno.serve(async (req) => {
   const c = handleCors(req);
   if (c) return c;
   if (req.method !== "POST") {
-    return json({ success: false, data: null, error: "Method not allowed" }, 405);
+    return json({ success: false, data: null, error: `Method ${req.method} not allowed` }, 405);
   }
 
   try {

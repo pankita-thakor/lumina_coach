@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/config/app_config.dart';
 import '../../../core/theme/app_theme.dart';
@@ -25,13 +26,20 @@ class _SplashPageState extends State<SplashPage>
   }
 
   Future<void> _goNext() async {
-    await Future<void>.delayed(const Duration(milliseconds: 1200));
+    await Future<void>.delayed(const Duration(milliseconds: 1500));
     if (!mounted) return;
+
     if (!AppConfig.isSupabaseConfigured) {
       context.go('/setup');
       return;
     }
-    context.go('/home');
+
+    final session = Supabase.instance.client.auth.currentSession;
+    if (session == null) {
+      context.go('/login');
+    } else {
+      context.go('/home');
+    }
   }
 
   @override
