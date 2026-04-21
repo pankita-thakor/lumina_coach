@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../constants/spacing.dart';
-
 class AppTextField extends StatelessWidget {
   const AppTextField({
     super.key,
     required this.controller,
     this.label,
     this.hint,
+    this.keyboardType,
     this.minLines = 1,
     this.maxLines = 1,
     this.onSubmitted,
@@ -18,6 +17,7 @@ class AppTextField extends StatelessWidget {
   final TextEditingController controller;
   final String? label;
   final String? hint;
+  final TextInputType? keyboardType;
   final int minLines;
   final int maxLines;
   final void Function(String)? onSubmitted;
@@ -28,6 +28,7 @@ class AppTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
+      keyboardType: keyboardType,
       minLines: minLines,
       maxLines: maxLines,
       obscureText: obscureText,

@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../core/storage/secure_api_key_storage.dart';
 import '../services/service_providers.dart';
 import '../services/tone_analysis_service.dart';
+import 'gemini_key_provider.dart';
 
 final toneAnalysisControllerProvider =
     AsyncNotifierProvider<ToneAnalysisNotifier, ToneScores?>(
@@ -18,13 +18,13 @@ class ToneAnalysisNotifier extends AsyncNotifier<ToneScores?> {
   Future<void> analyze(String message) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      final key = await SecureApiKeyStorage.readAnthropicKey();
+      final key = ref.read(geminiKeyProvider);
       if (key == null || key.isEmpty) {
-        throw Exception('Add Anthropic API key in Settings');
+        throw Exception('Add your Gemini API key in Settings.');
       }
       return ref.read(toneAnalysisServiceProvider).analyze(
             message: message,
-            anthropicApiKey: key,
+            geminiApiKey: key,
           );
     });
   }

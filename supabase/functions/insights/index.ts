@@ -1,6 +1,6 @@
 import { handleCors, json, readJson } from "../_shared/http.ts";
 import { requireUser } from "../_shared/auth.ts";
-import { callClaude } from "../_shared/claude.ts";
+import { callGemini } from "../_shared/gemini.ts";
 import { rateLimitHit } from "../_shared/rate_limit.ts";
 import { insightsBody } from "../_shared/schemas.ts";
 
@@ -11,9 +11,9 @@ Deno.serve(async (req) => {
     return json({ success: false, data: null, error: "Method not allowed" }, 405);
   }
 
-  const anthropicKey = req.headers.get("x-anthropic-key")?.trim() ?? "";
-  if (!anthropicKey) {
-    return json({ success: false, data: null, error: "Missing x-anthropic-key" }, 400);
+  const geminiKey = Deno.env.get("GEMINI_API_KEY") ?? req.headers.get("x-gemini-key")?.trim() ?? "";
+  if (!geminiKey) {
+    return json({ success: false, data: null, error: "Missing GEMINI_API_KEY" }, 400);
   }
 
   try {
@@ -44,8 +44,8 @@ Deno.serve(async (req) => {
 
     const sys =
       "You produce a concise coaching summary for the past week. Plain text only. Three short sections separated by blank lines: (1) headline title line, (2) 2-4 sentences overview, (3) bullet lines starting with '- ' for patterns and next steps. No JSON.";
-    const summary = await callClaude(
-      anthropicKey,
+    const summary = await callGemini(
+      geminiKey,
       sys,
       [
         {

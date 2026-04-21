@@ -5,11 +5,11 @@ class InsightsService {
 
   final FunctionsClient _fn;
 
-  Future<String> weeklySummary({required String anthropicApiKey}) async {
+  Future<String> weeklySummary({required String geminiApiKey}) async {
     final data = await _fn.invoke(
       'insights',
       body: const <String, dynamic>{},
-      anthropicApiKey: anthropicApiKey,
+      geminiApiKey: geminiApiKey,
     );
     return data['summary'] as String? ?? '';
   }

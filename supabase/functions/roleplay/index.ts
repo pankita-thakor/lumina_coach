@@ -1,6 +1,6 @@
 import { handleCors, json, readJson } from "../_shared/http.ts";
 import { requireUser } from "../_shared/auth.ts";
-import { callClaude } from "../_shared/claude.ts";
+import { callGemini } from "../_shared/gemini.ts";
 import { rateLimitHit } from "../_shared/rate_limit.ts";
 import { roleplayBody } from "../_shared/schemas.ts";
 
@@ -22,9 +22,9 @@ Deno.serve(async (req) => {
     return json({ success: false, data: null, error: "Method not allowed" }, 405);
   }
 
-  const anthropicKey = req.headers.get("x-anthropic-key")?.trim() ?? "";
-  if (!anthropicKey) {
-    return json({ success: false, data: null, error: "Missing x-anthropic-key" }, 400);
+  const geminiKey = Deno.env.get("GEMINI_API_KEY") ?? req.headers.get("x-gemini-key")?.trim() ?? "";
+  if (!geminiKey) {
+    return json({ success: false, data: null, error: "Missing GEMINI_API_KEY" }, 400);
   }
 
   try {
@@ -80,7 +80,7 @@ Deno.serve(async (req) => {
       content: t.content,
     }));
 
-    const reply = await callClaude(anthropicKey, sys, claudeMessages, 900);
+    const reply = await callGemini(geminiKey, sys, claudeMessages, 900);
     turns.push({ role: "assistant", content: reply });
 
     const payload = { scenario, turns };

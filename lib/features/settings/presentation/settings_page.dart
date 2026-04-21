@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/constants/spacing.dart';
-import '../../../core/storage/secure_api_key_storage.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../providers/gemini_key_provider.dart';
 import '../../../providers/preferences_provider.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
@@ -27,8 +27,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     _loadKey();
   }
 
-  Future<void> _loadKey() async {
-    final k = await SecureApiKeyStorage.readAnthropicKey();
+  void _loadKey() {
+    final k = ref.read(geminiKeyProvider);
     if (k != null && mounted) {
       _keyCtrl.text = k;
     }
@@ -43,7 +43,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Future<void> _saveKey() async {
     setState(() => _saving = true);
     try {
-      await SecureApiKeyStorage.saveAnthropicKey(_keyCtrl.text.trim());
+      await ref.read(geminiKeyProvider.notifier).save(_keyCtrl.text);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('API key saved on this device')),
@@ -55,7 +55,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   }
 
   Future<void> _clearKey() async {
-    await SecureApiKeyStorage.clearAnthropicKey();
+    await ref.read(geminiKeyProvider.notifier).clear();
     _keyCtrl.clear();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -79,12 +79,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         padding: const EdgeInsets.all(20),
         children: [
           Text(
-            'Bring your own key (BYOK)',
+            'Gemini API Key',
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 4),
           Text(
-            'Your Anthropic key stays in the device keychain. It’s sent to your Supabase Edge Function over HTTPS — never stored in Postgres.',
+            'Your Gemini key is stored on this device. It is sent to Supabase Edge Functions over HTTPS and never stored in the database.',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
@@ -94,7 +94,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             controller: _keyCtrl,
             obscureText: _mask,
             decoration: InputDecoration(
-              labelText: 'Anthropic API key',
+              labelText: 'Gemini API key',
               suffixIcon: IconButton(
                 onPressed: () => setState(() => _mask = !_mask),
                 icon: Icon(_mask ? Icons.visibility : Icons.visibility_off),

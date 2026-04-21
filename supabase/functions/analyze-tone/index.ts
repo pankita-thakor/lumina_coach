@@ -1,6 +1,6 @@
 import { handleCors, json, readJson } from "../_shared/http.ts";
 import { requireUser } from "../_shared/auth.ts";
-import { callClaude, parseJsonFromText } from "../_shared/claude.ts";
+import { callGemini, parseJsonFromText } from "../_shared/gemini.ts";
 import { rateLimitHit } from "../_shared/rate_limit.ts";
 import { analyzeToneBody } from "../_shared/schemas.ts";
 
@@ -11,9 +11,9 @@ Deno.serve(async (req) => {
     return json({ success: false, data: null, error: "Method not allowed" }, 405);
   }
 
-  const anthropicKey = req.headers.get("x-anthropic-key")?.trim() ?? "";
-  if (!anthropicKey) {
-    return json({ success: false, data: null, error: "Missing x-anthropic-key" }, 400);
+  const geminiKey = Deno.env.get("GEMINI_API_KEY") ?? req.headers.get("x-gemini-key")?.trim() ?? "";
+  if (!geminiKey) {
+    return json({ success: false, data: null, error: "Missing GEMINI_API_KEY" }, 400);
   }
 
   try {
@@ -39,8 +39,8 @@ Deno.serve(async (req) => {
 
     const sys =
       'Return ONLY JSON: {"scores":{"empathy":0-100,"clarity":0-100,"assertiveness":0-100,"warmth":0-100}} heuristic scores only.';
-    const claudeOut = await callClaude(
-      anthropicKey,
+    const claudeOut = await callGemini(
+      geminiKey,
       sys,
       [{ role: "user", content: body.message }],
       400,

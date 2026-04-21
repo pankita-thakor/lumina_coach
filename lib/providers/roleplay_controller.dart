@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../core/storage/secure_api_key_storage.dart';
 import '../services/service_providers.dart';
+import 'gemini_key_provider.dart';
 
 class RoleLine {
   const RoleLine({required this.role, required this.text});
@@ -30,9 +30,9 @@ class RoleplayController extends StateNotifier<RoleplayUiState> {
     required String scenario,
     required String userText,
   }) async {
-    final key = await SecureApiKeyStorage.readAnthropicKey();
+    final key = _ref.read(geminiKeyProvider);
     if (key == null || key.isEmpty) {
-      return 'Add Anthropic API key in Settings';
+      return 'Add your Gemini API key in Settings.';
     }
 
     final sid = state.sessionId;
@@ -48,7 +48,7 @@ class RoleplayController extends StateNotifier<RoleplayUiState> {
             sessionId: sid,
             scenario: scenario,
             userMessage: userText,
-            anthropicApiKey: key,
+            geminiApiKey: key,
           );
       state = RoleplayUiState(
         lines: [

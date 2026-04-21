@@ -19,6 +19,9 @@ import '../../features/situation_library/presentation/situation_library_page.dar
 import '../../features/splash/presentation/splash_page.dart';
 import '../../features/tone_analyzer/presentation/tone_analyzer_page.dart';
 
+import '../../features/auth/presentation/forgot_password_page.dart';
+import '../../features/auth/presentation/reset_password_page.dart';
+
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -49,6 +52,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       final loc = state.matchedLocation;
 
       if (loc == '/splash') return null;
+      if (loc == '/forgot-password' || loc == '/reset-password') return null;
 
       if (session == null && loc != '/login') {
         return '/login';
@@ -72,6 +76,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => const ForgotPasswordPage(),
+      ),
+      GoRoute(
+        path: '/reset-password',
+        builder: (context, state) => const ResetPasswordPage(),
       ),
       GoRoute(
         path: '/onboarding',

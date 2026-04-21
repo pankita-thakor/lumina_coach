@@ -8,12 +8,12 @@ class CoachService {
   Future<List<Map<String, dynamic>>> rewrite({
     required String message,
     required String context,
-    required String anthropicApiKey,
+    required String geminiApiKey,
   }) async {
     final data = await _fn.invoke(
       'rewrite-message',
       body: {'message': message, 'context': context},
-      anthropicApiKey: anthropicApiKey,
+      geminiApiKey: geminiApiKey,
     );
     final list = data['suggestions'] as List? ?? [];
     return list.map((e) => Map<String, dynamic>.from(e as Map)).toList();

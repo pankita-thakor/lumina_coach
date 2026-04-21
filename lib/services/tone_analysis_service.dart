@@ -21,12 +21,12 @@ class ToneAnalysisService {
 
   Future<ToneScores> analyze({
     required String message,
-    required String anthropicApiKey,
+    required String geminiApiKey,
   }) async {
     final data = await _fn.invoke(
       'analyze-tone',
       body: {'message': message},
-      anthropicApiKey: anthropicApiKey,
+      geminiApiKey: geminiApiKey,
     );
     final s = Map<String, dynamic>.from(data['scores'] as Map? ?? {});
     int v(String k) => (s[k] as num?)?.round().clamp(0, 100) ?? 0;

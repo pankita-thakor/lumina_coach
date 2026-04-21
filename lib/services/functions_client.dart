@@ -23,11 +23,11 @@ class FunctionsClient {
   Future<Map<String, dynamic>> invoke(
     String functionName, {
     Map<String, dynamic> body = const {},
-    String anthropicApiKey = '',
+    String geminiApiKey = '',
   }) async {
     final headers = <String, String>{};
-    if (anthropicApiKey.isNotEmpty) {
-      headers['x-anthropic-key'] = anthropicApiKey;
+    if (geminiApiKey.isNotEmpty) {
+      headers['x-gemini-key'] = geminiApiKey;
     }
 
     final res = await _client.functions.invoke(

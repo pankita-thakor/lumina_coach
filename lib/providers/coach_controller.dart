@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../core/storage/secure_api_key_storage.dart';
 import '../services/coach_service.dart';
 import '../services/service_providers.dart';
+import 'gemini_key_provider.dart';
 
 final coachRewriteProvider =
     AsyncNotifierProvider<CoachRewriteNotifier, List<Map<String, dynamic>>?>(
@@ -20,14 +20,14 @@ class CoachRewriteNotifier extends AsyncNotifier<List<Map<String, dynamic>>?> {
   Future<void> runRewrite(String message, String context) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      final key = await SecureApiKeyStorage.readAnthropicKey();
+      final key = ref.read(geminiKeyProvider);
       if (key == null || key.isEmpty) {
-        throw Exception('Add your Anthropic API key in Settings.');
+        throw Exception('Add your Gemini API key in Settings.');
       }
       return _svc.rewrite(
         message: message,
         context: context,
-        anthropicApiKey: key,
+        geminiApiKey: key,
       );
     });
   }

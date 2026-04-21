@@ -16,7 +16,7 @@ class RoleplayService {
     String? sessionId,
     required String scenario,
     required String userMessage,
-    required String anthropicApiKey,
+    required String geminiApiKey,
   }) async {
     final body = <String, dynamic>{
       'scenario': scenario,
@@ -27,7 +27,7 @@ class RoleplayService {
     final data = await _fn.invoke(
       'roleplay',
       body: body,
-      anthropicApiKey: anthropicApiKey,
+      geminiApiKey: geminiApiKey,
     );
 
     return RoleplayResult(
